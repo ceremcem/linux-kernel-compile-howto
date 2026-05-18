@@ -27,7 +27,7 @@ while :; do
         echo "New stable kernel available: $LATEST_KERNEL"
         echo "Changelog: $CHANGELOG_URL"
 
-        period="24h"
+        period="72h" # 3 days
     else
         if ! $first_msg_shown; then
             echo "System is already running on latest stable kernel: v$LATEST_KERNEL"
