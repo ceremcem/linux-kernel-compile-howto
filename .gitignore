@@ -1,2 +1,5 @@
 linux
 deb
+*.deb
+*.changes
+*.buildinfo
