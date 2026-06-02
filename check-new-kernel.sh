@@ -1,9 +1,16 @@
 #!/bin/bash
 set -u
 
-period="10m"
+now() {
+    date +%s
+}
+
 first_msg_shown=false
 retry_connect=false
+latest_informed_kernel=
+reset_period=$((48 * 3600)) # seconds
+last_reset=$(now)
+
 while :; do
     while :; do
         LATEST_KERNEL=$(curl -s https://www.kernel.org/releases.json | jq -r '.latest_stable.version')
@@ -23,17 +30,24 @@ while :; do
     CHANGELOG_URL="https://cdn.kernel.org/pub/linux/kernel/v${MAJOR}.x/ChangeLog-${LATEST_KERNEL}"
 
     if [[ "$LATEST_KERNEL" != "$(uname -r)" ]]; then
-        notify-send -u critical "New Stable Kernel" "New kernel available: $LATEST_KERNEL"
-        echo "New stable kernel available: $LATEST_KERNEL"
-        echo "Changelog: $CHANGELOG_URL"
-
-        period="72h" # 3 days
+        if [[ "$LATEST_KERNEL" != "$latest_informed_kernel" ]]; then
+            notify-send -u critical "New Stable Kernel" "New kernel available: $LATEST_KERNEL"
+            echo "New stable kernel available: $LATEST_KERNEL"
+            echo "Changelog: $CHANGELOG_URL"
+            latest_informed_kernel="$LATEST_KERNEL"
+        fi
     else
         if ! $first_msg_shown; then
-            echo "System is already running on latest stable kernel: v$LATEST_KERNEL"
+            echo "System is already running on latest stable kernel: v$(uname -r)"
             echo "Changelog: $CHANGELOG_URL"
             first_msg_shown=true
         fi
     fi
-    sleep $period
+
+    # Reset info popup in every 24h
+    if [[ $(now) -gt $((last_reset + reset_period)) ]]; then
+        latest_informed_kernel=
+        last_reset=$(now)
+    fi
+    sleep 10m
 done
