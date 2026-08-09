@@ -39,8 +39,9 @@ while :; do
 
     if [[ "$LATEST_KERNEL" != "$(uname -r)" ]]; then
         if [[ "$LATEST_KERNEL" != "$latest_informed_kernel" ]]; then
-            notify-send -u critical "New Stable Kernel" "New kernel available: $LATEST_KERNEL \n\n$(datef)"
-            echolog "New stable kernel available: $LATEST_KERNEL"
+            msg="New kernel available: $LATEST_KERNEL (curr: $(uname -r))"
+            notify-send -u critical "New Stable Kernel" "$msg \n\n$(datef)"
+            echolog "$msg"
             echo "Changelog: $CHANGELOG_URL"
             latest_informed_kernel="$LATEST_KERNEL"
             last_reset=$(now)
