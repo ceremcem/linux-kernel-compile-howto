@@ -12,5 +12,5 @@ if ! /sbin/vboxconfig; then
     [[ -z $latest_vbox ]] && { echo "Can not get latest VirtualBox version. Exiting"; exit 1; }
     echo "Latest Virtualbox is $latest_vbox"
     apt install $latest_vbox
-    /sbin/vboxconfig
 fi
+/sbin/vboxconfig

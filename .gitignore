@@ -3,3 +3,4 @@ deb
 *.deb
 *.changes
 *.buildinfo
+compile-install.sh
