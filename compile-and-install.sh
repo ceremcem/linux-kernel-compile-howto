@@ -3,12 +3,11 @@ set -eu
 
 echo "This script requires sudo privileges for certain commands."
 sudo -v || exit 1
-while true; do
+while sleep 60; do
     sudo -v
-    sleep 60
-done &
+done &>/dev/null &
 KEEPALIVE_PID=$!
-trap 'kill "$KEEPALIVE_PID" 2>/dev/null' EXIT
+trap 'kill "${KEEPALIVE_PID:-}" &>/dev/null || true' EXIT
 
 echo_popup(){
     notify-send -u critical "Kernel Compile Info" "$1"
