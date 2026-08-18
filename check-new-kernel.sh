@@ -37,9 +37,11 @@ while :; do
     MAJOR="${LATEST_KERNEL%%.*}"
     CHANGELOG_URL="https://cdn.kernel.org/pub/linux/kernel/v${MAJOR}.x/ChangeLog-${LATEST_KERNEL}"
 
-    if [[ "$LATEST_KERNEL" != "$(uname -r)" ]]; then
+    CURR_KERNEL=$(uname -r | sed 's/\.0$//') 
+
+    if [[ "$LATEST_KERNEL" != "$CURR_KERNEL" ]]; then
         if [[ "$LATEST_KERNEL" != "$latest_informed_kernel" ]]; then
-            msg="New kernel available: $LATEST_KERNEL (curr: $(uname -r))"
+            msg="New kernel available: $LATEST_KERNEL (curr: $CURR_KERNEL)"
             notify-send -u critical "New Stable Kernel" "$msg \n\n$(datef)"
             echolog "$msg"
             echo "Changelog: $CHANGELOG_URL"
@@ -48,7 +50,7 @@ while :; do
         fi
     else
         if ! $first_msg_shown; then
-            echolog "System is already running on latest stable kernel: v$(uname -r)"
+            echolog "System is already running on latest stable kernel: v$CURR_KERNEL"
             echo "Changelog: $CHANGELOG_URL"
             first_msg_shown=true
         fi
