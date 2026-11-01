@@ -14,3 +14,9 @@ if ! /sbin/vboxconfig; then
     apt install $latest_vbox
 fi
 /sbin/vboxconfig
+
+for m in vboxdrv vboxnetflt vboxnetadp; do
+    subject="=== $m ==="
+    body="$(modinfo "$m" 2>/dev/null | grep -E 'filename|vermagic')"
+    notify-send -u critical "$subject" "$body"
+done

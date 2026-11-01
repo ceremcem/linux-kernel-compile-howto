@@ -40,13 +40,15 @@ echo_popup "Reminder: Make space if needed in /boot partition: Available space: 
 start_time=$(date +%s)
 
 cca-suspend --disable-by kernel-compile || true
+periodic-snapshot.sh --defer kernel-compile || true
 ./1-fetch-new-source.sh
 ./2-compile-kernel.sh
 ./3-install-kernel.sh
 save_and_close_vms
-./4-reload-virtualbox-modules.sh
+./4-run-recompile-vbox-modules-on-next-boot.sh
 resume_vms
 cca-suspend --enable-by kernel-compile || true
+periodic-snapshot.sh --remove kernel-compile | true
 
 end_time=$(date +%s)
 duration=$((end_time - start_time))
